@@ -107,7 +107,7 @@ footer{padding:30px 28px 44px;font-size:.9rem;color:var(--soft);text-align:cente
   </section>
 
   <section class="ayat">
-    <p class="ar" lang="ar">رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيُنٍ وَاجْعَلْنَا لِلْمَالِ بَيْنَ ءَايَاتِنَا وَجْعَلْنَا لِلْمُتَّقِينَ إِمَامًا</p>
+    <p class="ar" lang="ar">رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيُنٍ وَاجْعَلْنَا لِل[...]</p>
     <p class="tr">Our Lord, grant us from our spouses and offspring comfort to our eyes, and make us leaders for the righteous.</p>
     <p class="ref">Surah Al-Furqan 25:74</p>
   </section>
@@ -170,7 +170,7 @@ footer{padding:30px 28px 44px;font-size:.9rem;color:var(--soft);text-align:cente
     <p>Wear something snowy, blue or white. Polar bear ears are welcome.</p>
   </div>
 
-  <footer>Grandparents, Parents and Chachu</footer>
+  <footer><strong>Hosted by</strong> Grandparents, Parents and Chachu</footer>
 </main>
 
 <script>
@@ -277,7 +277,7 @@ $("shareBtn").addEventListener("click",async()=>{
 (function(){
   if(matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   const c = $("snow"), ctx = c.getContext("2d"); let flakes = [];
-  function size(){c.width = innerWidth; c.height = innerHeight; flakes = Array.from({length:Math.min(40,innerWidth/12)},()=>({x:Math.random()*c.width,y:Math.random()*c.height,r:1.5+Math.random()*2.5,s:1+Math.random()*2.3,o:Math.random()*Math.PI*2}))}
+  function size(){c.width = innerWidth; c.height = innerHeight; flakes = Array.from({length:Math.min(40,innerWidth/12)},()=>({x:Math.random()*c.width,y:Math.random()*c.height,r:1.5+Math.random()*2,s:1+Math.random()*3,o:Math.random()*Math.PI*2}));}
   size(); addEventListener("resize",size);
   (function tick(t){
     ctx.clearRect(0,0,c.width,c.height); ctx.fillStyle = "rgba(255,255,255,.95)";
