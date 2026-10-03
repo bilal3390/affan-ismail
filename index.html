@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Affan & Ismail's Birthday</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ice:#d9ecf7; --snow:#fbfdff; --navy:#16304f; --red:#d9473f; --blue:#3b82c4; --honey:#f2b84b;
+  --ink:#16304f; --soft:#4d6580;
+}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{font-family:'Fredoka',system-ui,sans-serif;color:var(--ink);background:var(--ice);line-height:1.55;-webkit-font-smoothing:antialiased}
+main{max-width:520px;margin:0 auto;background:var(--snow);min-height:100vh;box-shadow:0 0 60px rgba(22,48,79,.12)}
+section{padding:40px 28px;text-align:center}
+.hero{background:var(--ice);padding-top:48px;border-bottom-left-radius:50% 28px;border-bottom-right-radius:50% 28px}
+.hero p.kicker{font-size:1.05rem;color:var(--soft);font-weight:500}
+h1{font-size:clamp(2.6rem,13vw,3.8rem);line-height:1.02;font-weight:700;margin:6px 0 4px;color:var(--navy)}
+h1 .amp{display:block;font-size:.5em;color:var(--red);font-weight:600;margin:2px 0}
+.sub{font-size:1.15rem;font-weight:500;color:var(--blue)}
+.bears{display:flex;justify-content:center;gap:6px;margin:22px 0 4px}
+.bears svg{width:42%;max-width:190px;height:auto}
+.bears svg:first-child{transform:rotate(-4deg);color:var(--red)}
+.bears svg:last-child{transform:rotate(4deg);color:var(--blue)}
+h2{font-size:1.6rem;font-weight:600;margin-bottom:6px}
+p.lead{color:var(--soft);max-width:34ch;margin:0 auto 20px}
+.ar{font-family:'Amiri','Noto Naskh Arabic',serif;direction:rtl;line-height:2.1}
+.bismillah{font-size:1.7rem;color:var(--navy);margin-bottom:10px}
+.ayat{background:var(--snow)}
+.ayat .ar{font-size:1.7rem;color:var(--navy);max-width:20ch;margin:0 auto 10px}
+.ayat .tr{max-width:32ch;margin:0 auto;color:var(--soft)}
+.ayat .ref{font-size:.9rem;color:var(--blue);margin-top:8px;font-weight:500}
+.count{display:flex;justify-content:center;gap:10px;margin-top:6px}
+.count div{background:var(--ice);border-radius:18px;padding:12px 4px;width:76px}
+.count b{display:block;font-size:1.7rem;font-weight:700;color:var(--red);line-height:1.1;font-variant-numeric:tabular-nums}
+.count span{font-size:.8rem;color:var(--soft)}
+.fun{display:grid;gap:12px;max-width:360px;margin:0 auto}
+.fun div{background:var(--ice);border-radius:20px;padding:16px 18px;text-align:left;border-left:6px solid var(--blue)}
+.fun div:nth-child(2){border-left-color:var(--red)}
+.fun div:nth-child(3){border-left-color:var(--honey)}
+.fun b{display:block;font-weight:600;font-size:1.1rem}
+.fun span{color:var(--soft);font-size:.95rem}
+.form{display:grid;gap:12px;max-width:340px;margin:0 auto 12px}
+.form input,.form select{font:inherit;font-size:1rem;padding:13px 16px;border-radius:16px;border:2px solid var(--ice);background:var(--snow);color:var(--ink);min-height:48px;width:100%}
+.form input:focus-visible,.form select:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.btn.cal{color:var(--navy);margin-top:14px;font-size:.95rem;padding:10px 20px;min-height:44px}
+.btn.share{color:var(--navy);margin-top:14px}
+.scratch{position:relative;width:100%;max-width:360px;height:150px;margin:0 auto;border-radius:22px;overflow:hidden;border:3px solid var(--navy);background:var(--snow)}
+.reveal{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.reveal b{font-size:1.9rem;font-weight:700;color:var(--red);line-height:1.1}
+.reveal span{font-size:1.1rem;font-weight:500}
+.scratch canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab;transition:opacity .6s}
+.scratch.done canvas{opacity:0;pointer-events:none}
+.hint{font-size:.9rem;color:var(--soft);margin-top:10px;min-height:1.4em}
+.venue{background:var(--navy);color:var(--snow);border-radius:28px;margin:0 16px;padding:34px 22px}
+.venue p{color:#b9cde2}
+.venue h2{color:var(--snow)}
+.btn{display:inline-block;font:inherit;font-weight:600;font-size:1.05rem;padding:13px 26px;border-radius:999px;text-decoration:none;border:2px solid currentColor;cursor:pointer;min-height:48px}
+.btn:focus-visible{outline:3px solid var(--honey);outline-offset:3px}
+.btn.map{color:var(--snow);margin-top:14px}
+.btn.wa{background:var(--red);border-color:var(--red);color:#fff;margin-top:6px}
+.btn.wa:active,.btn.map:active{transform:scale(.97)}
+.note{background:var(--ice);border-radius:24px;margin:28px 16px 0;padding:26px 22px}
+.note p{max-width:32ch;margin:0 auto;color:var(--soft)}
+footer{padding:30px 28px 44px;font-size:.9rem;color:var(--soft);text-align:center}
+.snow{position:fixed;inset:0;pointer-events:none;z-index:5}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.scratch canvas{transition:none}}
+</style>
+</head>
+<body>
+<canvas class="snow" id="snow" aria-hidden="true"></canvas>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="bear" viewBox="0 0 200 220">
+    <circle cx="48" cy="52" r="24" fill="#fff" stroke="#16304f" stroke-width="5"/>
+    <circle cx="152" cy="52" r="24" fill="#fff" stroke="#16304f" stroke-width="5"/>
+    <circle cx="48" cy="52" r="10" fill="#f4c7c3"/>
+    <circle cx="152" cy="52" r="10" fill="#f4c7c3"/>
+    <rect x="30" y="150" width="140" height="62" rx="30" fill="#fff" stroke="#16304f" stroke-width="5"/>
+    <circle cx="100" cy="98" r="66" fill="#fff" stroke="#16304f" stroke-width="5"/>
+    <ellipse cx="100" cy="118" rx="30" ry="22" fill="#eef6fc" stroke="#16304f" stroke-width="4"/>
+    <ellipse cx="100" cy="108" rx="11" ry="8" fill="#16304f"/>
+    <path d="M100 116v9M88 130q12 9 24 0" fill="none" stroke="#16304f" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="74" cy="88" r="6.5" fill="#16304f"/>
+    <circle cx="126" cy="88" r="6.5" fill="#16304f"/>
+    <circle cx="62" cy="108" r="8" fill="#f4c7c3" opacity=".8"/>
+    <circle cx="138" cy="108" r="8" fill="#f4c7c3" opacity=".8"/>
+    <path d="M70 156q30 20 60 0l6 26q-36 18-72 0z" fill="currentColor" stroke="#16304f" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M78 40l22-40 22 40z" fill="#f2b84b" stroke="#16304f" stroke-width="4" stroke-linejoin="round" transform="translate(0 6)"/>
+    <circle cx="100" cy="6" r="7" fill="currentColor" stroke="#16304f" stroke-width="3"/>
+  </symbol>
+</svg>
+
+<main>
+  <section class="hero">
+    <p class="ar bismillah" lang="ar">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</p>
+    <p class="kicker">You're invited to the birthday of</p>
+    <h1>Affan <span class="amp">&</span> Ismail</h1>
+    <p class="sub">Two little polar bears, one big party</p>
+    <div class="bears" role="img" aria-label="Two polar bears wearing party hats">
+      <svg><use href="#bear"/></svg>
+      <svg><use href="#bear"/></svg>
+    </div>
+  </section>
+
+  <section class="ayat">
+    <p class="ar" lang="ar">رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيُنٍ وَاجْعَلْنَا لِلْمُتَّقِينَ إِمَامًا</p>
+    <p class="tr">Our Lord, grant us from our spouses and offspring comfort to our eyes, and make us leaders for the righteous.</p>
+    <p class="ref">Surah Al-Furqan 25:74</p>
+  </section>
+
+  <section>
+    <h2>When is the party?</h2>
+    <p class="lead">Scratch the card with your finger to find out.</p>
+    <div class="scratch" id="scratch">
+      <div class="reveal"><b id="dateText"></b><span id="timeText"></span></div>
+      <canvas id="card" aria-label="Scratch card"></canvas>
+    </div>
+    <p class="hint" id="hint">Scratch here</p>
+    <a class="btn cal" id="calBtn" href="#" target="_blank" rel="noopener">Add to calendar</a>
+  </section>
+
+  <section>
+    <h2>Counting down</h2>
+    <p class="lead" id="cdLead">Days until the big day</p>
+    <div class="count" id="count" role="timer">
+      <div><b id="cd">0</b><span>days</span></div>
+      <div><b id="ch">0</b><span>hours</span></div>
+      <div><b id="cm">0</b><span>min</span></div>
+      <div><b id="cs">0</b><span>sec</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>What's in store</h2>
+    <p class="lead">A cosy evening for two bear cubs and their friends.</p>
+    <div class="fun">
+      <div><b>Games and fun</b><span>Little ones will have plenty to play and laugh about.</span></div>
+      <div><b>Cake cutting</b><span>Affan and Ismail blow out the candles together.</span></div>
+      <div><b>Dinner</b><span>Good food for everyone before you head home.</span></div>
+    </div>
+  </section>
+
+  <section class="venue">
+    <h2>Where?</h2>
+    <p id="venueName"></p>
+    <p id="venueAddr"></p>
+    <a class="btn map" id="mapBtn" href="#" target="_blank" rel="noopener">View on map</a>
+  </section>
+
+  <section>
+    <h2>Will you come?</h2>
+    <p class="lead">Please let us know by WhatsApp so we can save a seat for you.</p>
+    <div class="form">
+      <input id="gName" type="text" placeholder="Your name" autocomplete="name" aria-label="Your name">
+      <select id="gCount" aria-label="Number of guests">
+        <option value="1">1 guest</option><option value="2">2 guests</option><option value="3">3 guests</option>
+        <option value="4">4 guests</option><option value="5">5 guests</option><option value="6">6 or more guests</option>
+      </select>
+    </div>
+    <a class="btn wa" id="waBtn" href="#" target="_blank" rel="noopener">Confirm on WhatsApp</a>
+    <div><button class="btn share" id="shareBtn" type="button">Share this invitation</button></div>
+  </section>
+
+  <div class="note">
+    <h2>Dress code</h2>
+    <p>Wear something snowy, blue or white. Polar bear ears are welcome.</p>
+  </div>
+
+  <footer>Hosted by Bilal</footer>
+</main>
+
+<script>
+/* ===== Edit these details ===== */
+const INFO = {
+  names: "Affan & Ismail",
+  date: new Date(2026, 10, 21, 18, 0),   // 21 November 2026, 6:00 PM
+  venueName: "Street 8, House 1",
+  venueAddress: "Jahangir Park, Shahdara, Lahore",
+  mapLink: "https://maps.app.goo.gl/goLf7128DHMTFieY8?g_st=ac",
+  whatsapp: "923089250238"                // 03089250238 in international format
+};
+/* ============================== */
+
+const $ = id => document.getElementById(id);
+const d = INFO.date;
+$("dateText").textContent = d.toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"});
+$("timeText").textContent = d.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"});
+$("venueName").textContent = INFO.venueName;
+$("venueAddr").textContent = INFO.venueAddress;
+$("mapBtn").href = INFO.mapLink || "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(INFO.venueName + " " + INFO.venueAddress);
+function rsvp(){
+  const n = $("gName").value.trim(), g = $("gCount").value;
+  const msg = "Assalam o Alaikum! " + (n ? "This is " + n + ". " : "") + "We will be at " + INFO.names + "'s birthday party on 21 November. Guests: " + g + (g==="6" ? "+" : "") + ".";
+  $("waBtn").href = "https://wa.me/" + INFO.whatsapp + "?text=" + encodeURIComponent(msg);
+}
+$("gName").addEventListener("input",rsvp); $("gCount").addEventListener("change",rsvp); rsvp();
+
+/* Add to Google Calendar (6 PM to 9 PM, Pakistan time) */
+$("calBtn").href = "https://calendar.google.com/calendar/render?action=TEMPLATE"
+  + "&text=" + encodeURIComponent(INFO.names + "'s Birthday")
+  + "&dates=20261121T180000/20261121T210000&ctz=Asia/Karachi"
+  + "&location=" + encodeURIComponent(INFO.venueName + ", " + INFO.venueAddress);
+
+/* Countdown */
+(function(){
+  const target = INFO.date.getTime();
+  function tick(){
+    let s = Math.floor((target - Date.now())/1000);
+    if(s <= 0){ $("count").style.display = "none"; $("cdLead").textContent = "The party is today. See you soon!"; return; }
+    const p = n => String(n).padStart(2,"0");
+    $("cd").textContent = Math.floor(s/86400);
+    $("ch").textContent = p(Math.floor(s%86400/3600));
+    $("cm").textContent = p(Math.floor(s%3600/60));
+    $("cs").textContent = p(s%60);
+  }
+  tick(); setInterval(tick,1000);
+})();
+
+/* Share */
+$("shareBtn").addEventListener("click",async()=>{
+  const data = {title: INFO.names + "'s Birthday", text: "You're invited to " + INFO.names + "'s birthday!", url: location.href};
+  try{
+    if(navigator.share){ await navigator.share(data); }
+    else { await navigator.clipboard.writeText(location.href); $("shareBtn").textContent = "Link copied"; }
+  }catch(e){}
+});
+
+/* Scratch card */
+(function(){
+  const box = $("scratch"), c = $("card"), ctx = c.getContext("2d");
+  let w, h, drawing = false, finished = false, last = null;
+  function paint(){
+    const r = box.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
+    w = r.width; h = r.height;
+    c.width = w*dpr; c.height = h*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+    const g = ctx.createLinearGradient(0,0,w,h);
+    g.addColorStop(0,"#9cc7e6"); g.addColorStop(.5,"#d9ecf7"); g.addColorStop(1,"#8fbde0");
+    ctx.fillStyle = g; ctx.fillRect(0,0,w,h);
+    ctx.fillStyle = "rgba(255,255,255,.7)";
+    for(let i=0;i<40;i++){ctx.beginPath();ctx.arc(Math.random()*w,Math.random()*h,1+Math.random()*2.5,0,7);ctx.fill();}
+    ctx.fillStyle = "#16304f"; ctx.font = "600 22px Fredoka, sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillText("SCRATCH TO REVEAL", w/2, h/2);
+  }
+  function pos(e){const r = c.getBoundingClientRect();return {x:e.clientX-r.left,y:e.clientY-r.top};}
+  function scratch(e){
+    if(!drawing||finished) return;
+    const p = pos(e);
+    ctx.globalCompositeOperation = "destination-out";
+    ctx.lineCap = ctx.lineJoin = "round"; ctx.lineWidth = 38;
+    ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke();
+    last = p;
+  }
+  function cleared(){
+    const dpr = window.devicePixelRatio || 1;
+    const data = ctx.getImageData(0,0,c.width,c.height).data;
+    let n = 0, total = 0;
+    for(let i=3;i<data.length;i+=64){total++; if(data[i]===0) n++;}
+    return n/total;
+  }
+  c.addEventListener("pointerdown",e=>{drawing=true;last=pos(e);c.setPointerCapture(e.pointerId);scratch(e);$("hint").textContent="Keep going...";});
+  c.addEventListener("pointermove",scratch);
+  function end(){
+    if(!drawing) return; drawing=false;
+    if(!finished && cleared() > .5){finished=true;box.classList.add("done");$("hint").textContent="See you there!";}
+  }
+  c.addEventListener("pointerup",end); c.addEventListener("pointercancel",end);
+  paint();
+  window.addEventListener("resize",()=>{if(!finished) paint();});
+  if(document.fonts) document.fonts.ready.then(()=>{if(!finished) paint();});
+})();
+
+/* Gentle snowfall (skipped if reduced motion is on) */
+(function(){
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const c = $("snow"), ctx = c.getContext("2d"); let flakes = [];
+  function size(){c.width = innerWidth; c.height = innerHeight; flakes = Array.from({length:Math.min(40,innerWidth/12)},()=>({x:Math.random()*c.width,y:Math.random()*c.height,r:1.5+Math.random()*2.5,s:.3+Math.random()*.7,o:Math.random()*6}));}
+  size(); addEventListener("resize",size);
+  (function tick(t){
+    ctx.clearRect(0,0,c.width,c.height); ctx.fillStyle = "rgba(255,255,255,.95)";
+    ctx.shadowColor = "rgba(59,130,196,.5)"; ctx.shadowBlur = 4;
+    for(const f of flakes){
+      f.y += f.s; f.x += Math.sin(t/1200+f.o)*.4;
+      if(f.y > c.height+5){f.y = -5; f.x = Math.random()*c.width;}
+      ctx.beginPath(); ctx.arc(f.x,f.y,f.r,0,7); ctx.fill();
+    }
+    requestAnimationFrame(tick);
+  })(0);
+})();
+</script>
+</body>
+  </html>
