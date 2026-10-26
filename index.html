@@ -1,294 +1,505 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Affan & Ismail's Birthday</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Affan and Ismail's Birthday</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Instrument+Serif:ital@0;1&family=Figtree:wght@400;500;600&display=swap">
 <style>
-:root{
-  --ice:#d9ecf7; --snow:#fbfdff; --navy:#16304f; --red:#d9473f; --blue:#3b82c4; --honey:#f2b84b;
-  --ink:#16304f; --soft:#4d6580;
+/* Layout: a fixed WebGL scene (cake, balloons, gifts, confetti) that the camera flies through
+   as the page scrolls; invite copy is fixed HUD "shots" that zoom past at depth points along the path.
+   Four skins share one token set and recolor the 3D scene too. */
+:root {
+  /* Sorbet: peach sky, raspberry accent. Single deliberate look in both viewer themes. */
+  --bg: #ffe9df; --bg-2: #ffd0c4; --fg: #3a1f2a; --muted: #8a6470;
+  --accent: #e2436f; --accent-2: #ff8aa6; --card: #fff8f3; --card-fg: #3a1f2a;
+  --display: "Bricolage Grotesque", "Arial Black", sans-serif;
+  --serif: "Instrument Serif", Georgia, serif;
+  --body: "Figtree", "Segoe UI", system-ui, sans-serif;
+  color-scheme: light;
 }
-*{box-sizing:border-box;margin:0}
-html{scroll-behavior:smooth}
-body{font-family:'Fredoka',system-ui,sans-serif;color:var(--ink);background:var(--ice);line-height:1.55;-webkit-font-smoothing:antialiased}
-main{max-width:520px;margin:0 auto;background:var(--snow);min-height:100vh;box-shadow:0 0 60px rgba(22,48,79,.12)}
-section{padding:40px 28px;text-align:center}
-.hero{background:var(--ice);padding-top:48px;border-bottom-left-radius:50% 28px;border-bottom-right-radius:50% 28px}
-.hero p.kicker{font-size:1.05rem;color:var(--soft);font-weight:500}
-h1{font-size:clamp(2.6rem,13vw,3.8rem);line-height:1.02;font-weight:700;margin:6px 0 4px;color:var(--navy)}
-h1 .amp{display:block;font-size:.5em;color:var(--red);font-weight:600;margin:2px 0}
-.sub{font-size:1.15rem;font-weight:500;color:var(--blue)}
-.bears{display:flex;justify-content:center;gap:6px;margin:22px 0 4px}
-.bears svg{width:42%;max-width:190px;height:auto}
-.bears svg:first-child{transform:rotate(-4deg);color:var(--red)}
-.bears svg:last-child{transform:rotate(4deg);color:var(--blue)}
-h2{font-size:1.6rem;font-weight:600;margin-bottom:6px}
-p.lead{color:var(--soft);max-width:34ch;margin:0 auto 20px}
-.ar{font-family:'Amiri','Noto Naskh Arabic',serif;direction:rtl;line-height:2.1}
-.bismillah{font-size:1.7rem;color:var(--navy);margin-bottom:10px}
-.ayat{background:var(--snow)}
-.ayat .ar{font-size:1.7rem;color:var(--navy);max-width:20ch;margin:0 auto 10px}
-.ayat .tr{max-width:32ch;margin:0 auto;color:var(--soft)}
-.ayat .ref{font-size:.9rem;color:var(--blue);margin-top:8px;font-weight:500}
-.count{display:flex;justify-content:center;gap:10px;margin-top:6px}
-.count div{background:var(--ice);border-radius:18px;padding:12px 4px;width:76px}
-.count b{display:block;font-size:1.7rem;font-weight:700;color:var(--red);line-height:1.1;font-variant-numeric:tabular-nums}
-.count span{font-size:.8rem;color:var(--soft)}
-.fun{display:grid;gap:12px;max-width:360px;margin:0 auto}
-.fun div{background:var(--ice);border-radius:20px;padding:16px 18px;text-align:left;border-left:6px solid var(--blue)}
-.fun div:nth-child(2){border-left-color:var(--red)}
-.fun div:nth-child(3){border-left-color:var(--honey)}
-.fun b{display:block;font-weight:600;font-size:1.1rem}
-.fun span{color:var(--soft);font-size:.95rem}
-.form{display:grid;gap:12px;max-width:340px;margin:0 auto 12px}
-.form input,.form select{font:inherit;font-size:1rem;padding:13px 16px;border-radius:16px;border:2px solid var(--ice);background:var(--snow);color:var(--ink);min-height:48px;width:100%}
-.form input:focus-visible,.form select:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
-.btn.cal{color:var(--navy);margin-top:14px;font-size:.95rem;padding:10px 20px;min-height:44px}
-.btn.share{color:var(--navy);margin-top:14px}
-.scratch{position:relative;width:100%;max-width:360px;height:150px;margin:0 auto;border-radius:22px;overflow:hidden;border:3px solid var(--navy);background:var(--snow)}
-.reveal{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
-.reveal b{font-size:1.9rem;font-weight:700;color:var(--red);line-height:1.1}
-.reveal span{font-size:1.1rem;font-weight:500}
-.scratch canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab;transition:opacity .6s}
-.scratch.done canvas{opacity:0;pointer-events:none}
-.hint{font-size:.9rem;color:var(--soft);margin-top:10px;min-height:1.4em}
-.venue{background:var(--navy);color:var(--snow);border-radius:28px;margin:0 16px;padding:34px 22px}
-.venue p{color:#b9cde2}
-.venue h2{color:var(--snow)}
-.btn{display:inline-block;font:inherit;font-weight:600;font-size:1.05rem;padding:13px 26px;border-radius:999px;text-decoration:none;border:2px solid currentColor;cursor:pointer;min-height:48px}
-.btn:focus-visible{outline:3px solid var(--honey);outline-offset:3px}
-.btn.map{color:var(--snow);margin-top:14px}
-.btn.wa{background:var(--red);border-color:var(--red);color:#fff;margin-top:6px}
-.btn.wa:active,.btn.map:active{transform:scale(.97)}
-.note{background:var(--ice);border-radius:24px;margin:28px 16px 0;padding:26px 22px}
-.note p{max-width:32ch;margin:0 auto;color:var(--soft)}
-footer{padding:30px 28px 44px;font-size:.9rem;color:var(--soft);text-align:center}
-.snow{position:fixed;inset:0;pointer-events:none;z-index:5}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.scratch canvas{transition:none}}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--fg); font-family: var(--body); line-height: 1.5; overflow-x: hidden; transition: background-color .4s, color .4s; }
+h1, h2, h3 { font-family: var(--display); margin: 0; text-wrap: balance; line-height: 1; }
+.eyebrow { font-size: .74rem; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+
+canvas#scene { position: fixed; inset: 0; width: 100%; height: 100%; display: block; z-index: 0; }
+
+/* ---------- fly-through ---------- */
+.stage { height: 640vh; position: relative; z-index: 1; }
+.hud {
+  position: fixed; inset: 0; z-index: 2; pointer-events: none; perspective: 900px;
+  display: grid; place-items: center;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.shot {
+  grid-area: 1 / 1; max-width: 680px; width: 100%; text-align: center; display: grid; gap: .9rem; justify-items: center;
+  will-change: transform, opacity; transform-style: preserve-3d;
+  text-shadow: 0 2px 24px var(--bg), 0 0 60px var(--bg);
+  position: relative; padding: 2.5rem 1.5rem;
+}
+.shot::before {
+  content: ""; position: absolute; inset: -20% -30%; z-index: -1; border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--bg) 78%, transparent), transparent);
+}
+.shot .name { font-size: clamp(2.6rem, 11vw, 6.4rem); font-weight: 800; letter-spacing: -.04em; }
+.shot .name em { font-family: var(--serif); font-style: italic; font-weight: 400; color: var(--accent); font-size: .8em; }
+.shot .age { font-family: var(--serif); font-style: italic; font-size: clamp(1.6rem, 6vw, 2.6rem); color: var(--accent); }
+.shot .h { font-size: clamp(2.2rem, 9vw, 4.6rem); font-weight: 800; letter-spacing: -.03em; }
+.shot .h em { font-family: var(--serif); font-style: italic; font-weight: 400; color: var(--accent); }
+.shot p { margin: 0; font-size: clamp(1rem, 2.6vw, 1.2rem); max-width: 34ch; }
+.shot .lines { display: grid; gap: .3rem; font-variant-numeric: tabular-nums; font-size: clamp(1rem, 2.8vw, 1.25rem); }
+.shot .lines time { font-weight: 600; color: var(--accent); margin-right: .6rem; }
+.shot a { pointer-events: auto; color: var(--accent); font-weight: 600; }
+.cue { position: fixed; left: 0; right: 0; bottom: calc(68px + env(safe-area-inset-bottom, 0px)); z-index: 2; text-align: center; font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); pointer-events: none; transition: opacity .3s; }
+.cue b { display: block; font-size: 1.2rem; animation: bob 1.6s ease-in-out infinite; }
+@keyframes bob { 50% { transform: translateY(5px); } }
+
+/* ---------- landing: RSVP ---------- */
+.land { position: relative; z-index: 3; background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--bg) 45%, transparent) 40%); padding-block: 40vh 2rem;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.panel { max-width: 640px; margin: 0 auto; background: var(--card); color: var(--card-fg); border-radius: 20px; padding: clamp(1.4rem, 5vw, 2.4rem);
+  display: grid; gap: .9rem; box-shadow: 0 40px 80px -30px rgb(0 0 0 / .5); }
+.panel .q { font-family: var(--display); font-size: clamp(1.8rem, 6vw, 2.6rem); font-weight: 800; letter-spacing: -.02em; }
+label { display: grid; gap: .3rem; font-size: .85rem; font-weight: 600; }
+input, select { font: inherit; padding: .7rem .8rem; border-radius: 10px; border: 1px solid rgb(128 128 128 / .4); background: transparent; color: inherit; width: 100%; min-width: 0; }
+input:focus, select:focus, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem; }
+@media (max-width: 480px) { .row { grid-template-columns: 1fr; } }
+button.go { font: inherit; font-weight: 600; padding: .9rem 1.2rem; border: 0; border-radius: 12px; cursor: pointer; background: var(--accent); color: var(--card); font-size: 1rem; }
+/* ---------- RSVP reaction: full-screen moment over the live scene ---------- */
+.reaction {
+  position: fixed; inset: 0; z-index: 40; display: grid; place-items: center; text-align: center;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: env(safe-area-inset-top, 0px) env(safe-area-inset-bottom, 0px);
+  background: radial-gradient(ellipse at 50% 45%, color-mix(in srgb, var(--bg) 30%, transparent), color-mix(in srgb, var(--bg) 82%, transparent) 75%);
+  animation: fadein .6s ease-out;
+}
+.reaction.sad { background: radial-gradient(ellipse at 50% 45%, color-mix(in srgb, var(--bg) 55%, transparent), color-mix(in srgb, var(--bg) 92%, transparent) 75%); }
+@keyframes fadein { from { opacity: 0; } }
+.reaction-inner { max-width: 640px; display: grid; gap: 1rem; justify-items: center; text-shadow: 0 2px 24px var(--bg), 0 0 60px var(--bg); }
+.reaction-inner > * { animation: rise .9s cubic-bezier(.2,.9,.3,1) both; }
+.reaction-inner > :nth-child(2) { animation-delay: .25s; } .reaction-inner > :nth-child(3) { animation-delay: .45s; } .reaction-inner > :nth-child(4) { animation-delay: .7s; }
+@keyframes rise { from { opacity: 0; transform: translateY(26px) scale(.96); } }
+.reaction .h { font-size: clamp(2.2rem, 9vw, 4.4rem); font-weight: 800; letter-spacing: -.03em; }
+.reaction .h em { font-family: var(--serif); font-style: italic; font-weight: 400; color: var(--accent); }
+.reaction p { margin: 0; font-size: clamp(1.05rem, 2.8vw, 1.3rem); max-width: 40ch; }
+.reaction .actions { display: flex; gap: .7rem; flex-wrap: wrap; justify-content: center; margin-top: .6rem; }
+.reaction .actions .wa {
+  flex-basis: 100%; display: inline-flex; align-items: center; justify-content: center; gap: .8rem;
+  width: min(100%, 360px); margin: 0 auto .4rem; padding: .55rem 1.6rem .55rem .6rem; border-radius: 999px;
+  text-decoration: none; font-size: 1.1rem; font-weight: 700; letter-spacing: .01em; color: #fff;
+  background: linear-gradient(135deg, #3ddc7a, #1fbf5f 55%, #128c5a); text-shadow: none;
+  box-shadow: 0 14px 34px -10px rgb(18 140 90 / .75), inset 0 1px 0 rgb(255 255 255 / .35);
+  transition: transform .18s ease, box-shadow .18s ease;
+  animation: pulse 2.2s ease-in-out 1.4s infinite;
+}
+.reaction .actions .wa:hover, .reaction .actions .wa:focus-visible { transform: translateY(-2px) scale(1.02); box-shadow: 0 20px 40px -10px rgb(18 140 90 / .85), inset 0 1px 0 rgb(255 255 255 / .35); animation: none; }
+.reaction .actions .wa:active { transform: translateY(0) scale(.99); }
+.reaction .actions .wa .ic { width: 44px; height: 44px; border-radius: 50%; background: #fff; color: #1fbf5f; display: grid; place-items: center; flex: none; box-shadow: 0 2px 8px rgb(0 0 0 / .18); }
+.reaction .actions .wa .ic svg { width: 26px; height: 26px; }
+.reaction .actions .wa .lbl { display: grid; text-align: left; line-height: 1.15; }
+.reaction .actions .wa .lbl small { font-size: .72rem; font-weight: 500; opacity: .85; letter-spacing: .04em; text-transform: uppercase; }
+@keyframes pulse { 0%, 100% { box-shadow: 0 14px 34px -10px rgb(18 140 90 / .75), 0 0 0 0 rgb(37 211 102 / .45); } 50% { box-shadow: 0 14px 34px -10px rgb(18 140 90 / .75), 0 0 0 12px rgb(37 211 102 / 0); } }
+@media (prefers-reduced-motion: reduce) { .reaction .actions .wa { animation: none; } }
+.reaction .wa-note { font-size: .85rem; color: var(--muted); max-width: 36ch; }
+.reaction .wa-note b { color: var(--fg); font-variant-numeric: tabular-nums; user-select: all; }
+.face { width: clamp(120px, 28vw, 180px); height: auto; max-width: 100%; filter: drop-shadow(0 20px 40px rgb(0 0 0 / .35)); }
+.face .tear { opacity: 0; }
+.reaction.sad .face .tear { opacity: 1; animation: drip 1.6s ease-in infinite; transform-origin: 62px 48px; }
+.reaction.sad .face .tear2 { animation-delay: .8s; transform-origin: 38px 48px; }
+@keyframes drip { 0% { transform: translateY(0) scale(.6); opacity: 0; } 30% { opacity: 1; } 100% { transform: translateY(22px) scale(1); opacity: 0; } }
+.reaction.happy .face { animation: pop 1s cubic-bezier(.3,1.7,.5,1) both, wiggle 2.2s ease-in-out 1s infinite; }
+.reaction.sad .face { animation: rise .9s cubic-bezier(.2,.9,.3,1) both, sigh 3s ease-in-out 1s infinite; }
+@keyframes pop { 0% { transform: scale(.2) rotate(-20deg); opacity: 0; } 100% { transform: scale(1) rotate(0); opacity: 1; } }
+@keyframes wiggle { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg) translateY(-6px); } }
+@keyframes sigh { 50% { transform: translateY(8px) rotate(-4deg); } }
+button.ghost { background: color-mix(in srgb, var(--bg) 40%, transparent); color: var(--fg); border: 1px solid color-mix(in srgb, var(--fg) 35%, transparent); }
+body.locked { overflow: hidden; }
+body.locked .land, body.locked .cue { visibility: hidden; }
+@media (prefers-reduced-motion: reduce) { .reaction, .reaction-inner > *, .face, .tear { animation: none !important; } }
+.host { text-align: center; color: var(--muted); font-size: .9rem; padding-block: 2.5rem 7rem; margin: 0; text-shadow: 0 1px 12px var(--bg); }
+.host b { color: var(--fg); }
+
+/* static fallback: reduced motion or WebGL unavailable */
+html.static .stage { height: auto; padding-block: 4rem; }
+html.static .hud { position: static; display: grid; gap: 5rem; perspective: none; pointer-events: auto; }
+html.static .shot { grid-area: auto; transform: none !important; opacity: 1 !important; }
+html.static .cue { display: none; }
+html.static .land { padding-top: 2rem; }
 </style>
 </head>
 <body>
-<canvas class="snow" id="snow" aria-hidden="true"></canvas>
 
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <symbol id="bear" viewBox="0 0 200 220">
-    <circle cx="48" cy="52" r="24" fill="#fff" stroke="#16304f" stroke-width="5"/>
-    <circle cx="152" cy="52" r="24" fill="#fff" stroke="#16304f" stroke-width="5"/>
-    <circle cx="48" cy="52" r="10" fill="#f4c7c3"/>
-    <circle cx="152" cy="52" r="10" fill="#f4c7c3"/>
-    <rect x="30" y="150" width="140" height="62" rx="30" fill="#fff" stroke="#16304f" stroke-width="5"/>
-    <circle cx="100" cy="98" r="66" fill="#fff" stroke="#16304f" stroke-width="5"/>
-    <ellipse cx="100" cy="118" rx="30" ry="22" fill="#eef6fc" stroke="#16304f" stroke-width="4"/>
-    <ellipse cx="100" cy="108" rx="11" ry="8" fill="#16304f"/>
-    <path d="M100 116v9M88 130q12 9 24 0" fill="none" stroke="#16304f" stroke-width="4" stroke-linecap="round"/>
-    <circle cx="74" cy="88" r="6.5" fill="#16304f"/>
-    <circle cx="126" cy="88" r="6.5" fill="#16304f"/>
-    <circle cx="62" cy="108" r="8" fill="#f4c7c3" opacity=".8"/>
-    <circle cx="138" cy="108" r="8" fill="#f4c7c3" opacity=".8"/>
-    <path d="M70 156q30 20 60 0l6 26q-36 18-72 0z" fill="currentColor" stroke="#16304f" stroke-width="4" stroke-linejoin="round"/>
-    <path d="M78 40l22-40 22 40z" fill="#f2b84b" stroke="#16304f" stroke-width="4" stroke-linejoin="round" transform="translate(0 6)"/>
-    <circle cx="100" cy="6" r="7" fill="currentColor" stroke="#16304f" stroke-width="3"/>
-  </symbol>
-</svg>
+<canvas id="scene" aria-hidden="true"></canvas>
 
-<main>
-  <section class="hero">
-    <p class="ar bismillah" lang="ar">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</p>
-    <p class="kicker">You're invited to the birthday of</p>
-    <h1>Affan <span class="amp">&</span> Ismail</h1>
-    <p class="sub">Two little polar bears, one big party</p>
-    <div class="bears" role="img" aria-label="Two polar bears wearing party hats">
-      <svg><use href="#bear"/></svg>
-      <svg><use href="#bear"/></svg>
-    </div>
-  </section>
+<div class="stage" id="stage"></div>
 
-  <section class="ayat">
-    <p class="ar" lang="ar">رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيُنٍ وَاجْعَلْنَا لِل[...]</p>
-    <p class="tr">Our Lord, grant us from our spouses and offspring comfort to our eyes, and make us leaders for the righteous.</p>
-    <p class="ref">Surah Al-Furqan 25:74</p>
-  </section>
-
-  <section>
-    <h2>When is the party?</h2>
-    <p class="lead">Scratch the card with your finger to find out.</p>
-    <div class="scratch" id="scratch">
-      <div class="reveal"><b id="dateText"></b><span id="timeText"></span></div>
-      <canvas id="card" aria-label="Scratch card"></canvas>
-    </div>
-    <p class="hint" id="hint">Scratch here</p>
-    <a class="btn cal" id="calBtn" href="#" target="_blank" rel="noopener">Add to calendar</a>
-  </section>
-
-  <section>
-    <h2>Counting down</h2>
-    <p class="lead" id="cdLead">Days until the big day</p>
-    <div class="count" id="count" role="timer">
-      <div><b id="cd">0</b><span>days</span></div>
-      <div><b id="ch">0</b><span>hours</span></div>
-      <div><b id="cm">0</b><span>min</span></div>
-      <div><b id="cs">0</b><span>sec</span></div>
-    </div>
-  </section>
-
-  <section>
-    <h2>What's in the party</h2>
-    <p class="lead">A cosy evening for two bear cubs and their friends.</p>
-    <div class="fun">
-      <div><b>Games and fun</b><span>Little ones will have plenty to play and laugh about.</span></div>
-      <div><b>Cake cutting</b><span>Affan and Ismail blow out the candles together.</span></div>
-      <div><b>Dinner</b><span>Good food for everyone before you head home.</span></div>
-    </div>
-  </section>
-
-  <section class="venue">
-    <h2>Where?</h2>
-    <p id="venueName"></p>
-    <p id="venueAddr"></p>
-    <a class="btn map" id="mapBtn" href="#" target="_blank" rel="noopener">View on map</a>
-  </section>
-
-  <section>
-    <h2>Will you come?</h2>
-    <p class="lead">Please let us know by WhatsApp so we can save a seat for you.</p>
-    <div class="form">
-      <input id="gName" type="text" placeholder="Your name" autocomplete="name" aria-label="Your name">
-      <select id="gCount" aria-label="Number of guests">
-        <option value="1">1 guest</option><option value="2">2 guests</option><option value="3">3 guests</option>
-        <option value="4">4 guests</option><option value="5">5 guests</option><option value="6">6 or more guests</option>
-      </select>
-    </div>
-    <a class="btn wa" id="waBtn" href="#" target="_blank" rel="noopener">Confirm on WhatsApp</a>
-    <div><button class="btn share" id="shareBtn" type="button">Share this invitation</button></div>
-  </section>
-
-  <div class="note">
-    <h2>Dress code</h2>
-    <p>Wear something snowy, blue or white. Polar bear ears are welcome.</p>
+<div class="hud" id="hud">
+  <div class="shot" data-at="0.02" data-span="0.16">
+    <div class="eyebrow">You're invited</div>
+    <h1 class="name">Affan <em>&amp;</em> Ismail</h1>
+    <div class="age">Affan turned three, Ismail turns one</div>
+    <p>Two boys, two cakes, one party.</p>
   </div>
+  <div class="shot" data-at="0.26" data-span="0.14">
+    <div class="eyebrow">When</div>
+    <h2 class="h">Saturday, <em>21 November</em></h2>
+    <p>5:00 to 11:00 PM. Door's always open, cake at 9 PM sharp.</p>
+  </div>
+  <div class="shot" data-at="0.48" data-span="0.14">
+    <div class="eyebrow">Where</div>
+    <h2 class="h">At our home, <em>where it all began</em></h2>
+    <p>The same walls that heard Affan's first word and watched Ismail's first steps. There's no place we'd rather celebrate them than here, with you.</p>  </div>
+  <div class="shot" data-at="0.68" data-span="0.14">
+    <div class="eyebrow">The evening</div>
+    <div class="lines">
+      <div><time>5:00 PM</time>Door opens, come whenever you can</div>
+      <div><time>7:00 PM</time>Dinner</div>
+      <div><time>9:00 PM</time>Two cakes, four candles. Sharp.</div>
+      <div><time>11:00 PM</time>Goodnight</div>
+    </div>
+  </div>
+  <div class="shot" data-at="0.88" data-span="0.14">
+    <div class="eyebrow">One more thing</div>
+    <h2 class="h">Your presence is <em>the present</em></h2>
+    <p>Three years with Affan, one with Ismail, and every bit of it made better by the people around them. Come hungry, stay late, and help us blow out four little candles.</p>
+  </div>
+</div>
+<div class="cue" id="cue">Scroll to begin <b>↓</b></div>
 
-  <footer><strong>Hosted by</strong> Grandparents, Parents and Chachu</footer>
-</main>
+<section class="land">
+  <form class="panel" id="rsvp">
+    <div class="eyebrow">RSVP by 14 November</div>
+    <div class="q">Will you join us?</div>
+    <div class="row">
+      <label for="guest">Your name<input id="guest" name="guest" placeholder="Jordan Lee" required></label>
+      <label for="count">How many coming<input id="count" name="count" type="number" min="1" max="8" value="2"></label>
+    </div>
+    <label for="coming">Attending<select id="coming" name="coming"><option>Yes, we'll be there</option><option>Sadly no</option></select></label>
+    <label for="notes">Allergies or notes<input id="notes" name="notes" placeholder="Nut allergy, needs a nap at 5"></label>
+    <button class="go" type="submit">Send RSVP</button>
+  </form>
+  <p class="host">Hosted by <b>Affan's and Ismail's Abu G and Dado</b></p>
+</section>
 
+<div class="reaction" id="reaction" hidden role="dialog" aria-live="polite">
+  <div class="reaction-inner">
+    <svg class="face" viewBox="0 0 100 100" aria-hidden="true">
+      <circle cx="50" cy="50" r="44" fill="var(--accent)" />
+      <circle cx="36" cy="42" r="4.5" fill="var(--card)" />
+      <circle cx="64" cy="42" r="4.5" fill="var(--card)" />
+      <path id="mouth" d="M32 64 Q50 78 68 64" fill="none" stroke="var(--card)" stroke-width="5" stroke-linecap="round" />
+      <path class="tear" d="M62 48 q6 10 0 14 q-6 -4 0 -14z" fill="var(--accent-2)" />
+      <path class="tear tear2" d="M38 48 q6 10 0 14 q-6 -4 0 -14z" fill="var(--accent-2)" />
+    </svg>
+    <h2 class="h" id="rTitle"></h2>
+    <p id="rText"></p>
+    <div class="actions">
+      <a class="go wa" id="waLink" href="https://wa.me/923089250238" target="_blank" rel="noopener">
+        <span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2m0 1.8a8.2 8.2 0 0 1 0 16.4 8.1 8.1 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 0 1 12 3.8M8.6 7.3c-.2 0-.5 0-.7.3-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3.1 4.9 4.3 2.4 1 2.9.8 3.4.7.5 0 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3l-2-1c-.3-.1-.5-.2-.7.1l-.9 1.1c-.2.2-.3.2-.6.1a6.7 6.7 0 0 1-3.4-2.9c-.2-.4.3-.4.7-1.3.1-.2 0-.4 0-.5l-.9-2.2c-.2-.5-.4-.5-.6-.5z"/></svg></span>
+        <span class="lbl"><small>One tap</small>Send RSVP on WhatsApp</span>
+      </a>
+      <button class="go ghost" type="button" id="closeR">Back to the invite</button>
+      <button class="go ghost" type="button" id="again">Change my answer</button>
+    </div>
+    <p class="wa-note">Opens a WhatsApp message to <b>+92 308 9250238</b> with your answer filled in. Just press send.</p>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-/* ===== Edit these details ===== */
-const INFO = {
-  names: "Affan & Ismail",
-  date: new Date(2026, 10, 21, 18, 0),   // 21 November 2026, 6:00 PM
-  venueName: "Street 8, House 1",
-  venueAddress: "Jahangir Park, Shahdara, Lahore",
-  mapLink: "https://maps.app.goo.gl/goLf7128DHMTFieY8?g_st=ac",
-  whatsapp: "923089250238"                // 03089250238 in international format
-};
-/* ============================== */
+(function () {
+  var root = document.documentElement;
+  var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var clamp = function (v, a, b) { return Math.max(a, Math.min(b, v)); };
 
-const $ = id => document.getElementById(id);
-const d = INFO.date;
-$("dateText").textContent = d.toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"});
-$("timeText").textContent = d.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"});
-$("venueName").textContent = INFO.venueName;
-$("venueAddr").textContent = INFO.venueAddress;
-$("mapBtn").href = INFO.mapLink || "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(INFO.venueName + " " + INFO.venueAddress);
-function rsvp(){
-  const n = $("gName").value.trim(), g = $("gCount").value;
-  const msg = "Assalam o Alaikum! " + (n ? "This is " + n + ". " : "") + "We will be at " + INFO.names + "'s birthday party on 21 November. Guests: " + g + (g==="6" ? "+" : "") + ".";
-  $("waBtn").href = "https://wa.me/" + INFO.whatsapp + "?text=" + encodeURIComponent(msg);
-}
-$("gName").addEventListener("input",rsvp); $("gCount").addEventListener("change",rsvp); rsvp();
+  // Sorbet palette for the 3D scene (matches the CSS tokens above)
+  var SKIN = { bg: 0xffe9df, ground: 0xffd0c4, balloons: [0xe2436f, 0xff8aa6, 0xff9f6b, 0xfff8f3], tiers: [0xfff8f3, 0xff9f6b, 0xfff8f3], icing: 0xe2436f, gifts: [0xe2436f, 0xff9f6b, 0xffd6cf], ribbon: 0xfff8f3, star: 0xe2436f, light: 0xffffff };
 
-/* Add to Google Calendar (6 PM to 9 PM, Pakistan time) */
-$("calBtn").href = "https://calendar.google.com/calendar/render?action=TEMPLATE"
-  + "&text=" + encodeURIComponent(INFO.names + "'s Birthday")
-  + "&dates=20261121T180000/20261121T210000&ctz=Asia/Karachi"
-  + "&location=" + encodeURIComponent(INFO.venueName + ", " + INFO.venueAddress);
+  // ---------- 3D world ----------
+  var world = null;
+  function buildWorld() {
+    if (!window.THREE) return null;
+    var canvas = document.getElementById('scene');
+    var renderer;
+    try { renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: false }); } catch (e) { return null; }
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+    renderer.outputEncoding = THREE.sRGBEncoding;
 
-/* Countdown */
-(function(){
-  const target = INFO.date.getTime();
-  function tick(){
-    let s = Math.floor((target - Date.now())/1000);
-    if(s <= 0){ $("count").style.display = "none"; $("cdLead").textContent = "The party is today. See you soon!"; return; }
-    const p = n => String(n).padStart(2,"0");
-    $("cd").textContent = Math.floor(s/86400);
-    $("ch").textContent = p(Math.floor(s%86400/3600));
-    $("cm").textContent = p(Math.floor(s%3600/60));
-    $("cs").textContent = p(s%60);
-  }
-  tick(); setInterval(tick,1000);
-})();
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(50, 1, .1, 200);
+    scene.fog = new THREE.Fog(0x000000, 25, 90);
 
-/* Share */
-$("shareBtn").addEventListener("click",async()=>{
-  const data = {title: INFO.names + "'s Birthday", text: "You're invited to " + INFO.names + "'s birthday!", url: location.href};
-  try{
-    if(navigator.share){ await navigator.share(data); }
-    else { await navigator.clipboard.writeText(location.href); $("shareBtn").textContent = "Link copied"; }
-  }catch(e){}
-});
+    var ambient = new THREE.HemisphereLight(0xffffff, 0x222233, .9); scene.add(ambient);
+    var sun = new THREE.DirectionalLight(0xffffff, .9); sun.position.set(8, 14, 10); scene.add(sun);
+    var candleLight = new THREE.PointLight(0xffa64d, 1.2, 16); candleLight.position.set(0, 5.6, 1); scene.add(candleLight);
 
-/* Scratch card */
-(function(){
-  const box = $("scratch"), c = $("card"), ctx = c.getContext("2d");
-  let w, h, drawing = false, finished = false, last = null;
-  function paint(){
-    const r = box.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
-    w = r.width; h = r.height;
-    c.width = w*dpr; c.height = h*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
-    const g = ctx.createLinearGradient(0,0,w,h);
-    g.addColorStop(0,"#9cc7e6"); g.addColorStop(.5,"#d9ecf7"); g.addColorStop(1,"#8fbde0");
-    ctx.fillStyle = g; ctx.fillRect(0,0,w,h);
-    ctx.fillStyle = "rgba(255,255,255,.7)";
-    for(let i=0;i<40;i++){ctx.beginPath();ctx.arc(Math.random()*w,Math.random()*h,1+Math.random()*2.5,0,7);ctx.fill();}
-    ctx.fillStyle = "#16304f"; ctx.font = "600 22px Fredoka, sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-    ctx.fillText("SCRATCH TO REVEAL", w/2, h/2);
-  }
-  function pos(e){const r = c.getBoundingClientRect();return {x:e.clientX-r.left,y:e.clientY-r.top};}
-  function scratch(e){
-    if(!drawing||finished) return;
-    const p = pos(e);
-    ctx.globalCompositeOperation = "destination-out";
-    ctx.lineCap = ctx.lineJoin = "round"; ctx.lineWidth = 38;
-    ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke();
-    last = p;
-  }
-  function cleared(){
-    const dpr = window.devicePixelRatio || 1;
-    const data = ctx.getImageData(0,0,c.width,c.height).data;
-    let n = 0, total = 0;
-    for(let i=3;i<data.length;i+=64){total++; if(data[i]===0) n++;}
-    return n/total;
-  }
-  c.addEventListener("pointerdown",e=>{drawing=true;last=pos(e);c.setPointerCapture(e.pointerId);scratch(e);$("hint").textContent="Keep going...";});
-  c.addEventListener("pointermove",scratch);
-  function end(){
-    if(!drawing) return; drawing=false;
-    if(!finished && cleared() > .5){finished=true;box.classList.add("done");$("hint").textContent="See you there!";}
-  }
-  c.addEventListener("pointerup",end); c.addEventListener("pointercancel",end);
-  paint();
-  window.addEventListener("resize",()=>{if(!finished) paint();});
-  if(document.fonts) document.fonts.ready.then(()=>{if(!finished) paint();});
-})();
+    var parts = { balloons: [], tiers: [], icing: [], gifts: [], ribbons: [], strings: [], flames: [] };
+    var mat = function (color, opts) { return new THREE.MeshStandardMaterial(Object.assign({ color: color, roughness: .55, metalness: .05 }, opts || {})); };
 
-/* Gentle snowfall (skipped if reduced motion is on) */
-(function(){
-  if(matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  const c = $("snow"), ctx = c.getContext("2d"); let flakes = [];
-  function size(){c.width = innerWidth; c.height = innerHeight; flakes = Array.from({length:Math.min(40,innerWidth/12)},()=>({x:Math.random()*c.width,y:Math.random()*c.height,r:1.5+Math.random()*2,s:1+Math.random()*3,o:Math.random()*Math.PI*2}));}
-  size(); addEventListener("resize",size);
-  (function tick(t){
-    ctx.clearRect(0,0,c.width,c.height); ctx.fillStyle = "rgba(255,255,255,.95)";
-    ctx.shadowColor = "rgba(59,130,196,.5)"; ctx.shadowBlur = 4;
-    for(const f of flakes){
-      f.y += f.s; f.x += Math.sin(t/1200+f.o)*.4;
-      if(f.y > c.height+5){f.y = -5; f.x = Math.random()*c.width;}
-      ctx.beginPath(); ctx.arc(f.x,f.y,f.r,0,7); ctx.fill();
+    // ground disc
+    var ground = new THREE.Mesh(new THREE.CircleGeometry(40, 64), mat(0x000000, { roughness: 1 }));
+    ground.rotation.x = -Math.PI / 2; scene.add(ground); parts.ground = ground;
+
+    // two cakes: Affan (3 candles) and Ismail (1 candle)
+    var candleMat = mat(0xfff5e0, { roughness: .4 });
+    var flameMat = new THREE.MeshBasicMaterial({ color: 0xffb347 });
+    parts.plates = [];
+    function makeCake(x, s, candles) {
+      var cake = new THREE.Group(); cake.position.x = x; cake.scale.setScalar(s);
+      var plate = new THREE.Mesh(new THREE.CylinderGeometry(4.4, 4.6, .25, 64), mat(0xffffff, { roughness: .3, metalness: .2 }));
+      plate.position.y = .12; cake.add(plate); parts.plates.push(plate);
+      var tiersSpec = [[3.4, 1.5, 1.0], [2.5, 1.35, 2.42], [1.7, 1.2, 3.7]];
+      tiersSpec.forEach(function (t) {
+        var m = new THREE.Mesh(new THREE.CylinderGeometry(t[0], t[0], t[1], 64), mat(0xffffff));
+        m.position.y = t[2]; cake.add(m); parts.tiers.push(m);
+        var ring = new THREE.Mesh(new THREE.TorusGeometry(t[0], .17, 14, 64), mat(0xffffff, { roughness: .35 }));
+        ring.rotation.x = Math.PI / 2; ring.position.y = t[2] + t[1] / 2; cake.add(ring); parts.icing.push(ring);
+        for (var k = 0; k < 10; k++) {
+          var drip = new THREE.Mesh(new THREE.SphereGeometry(.16, 10, 10), ring.material);
+          var a = (k / 10) * Math.PI * 2 + t[0];
+          drip.position.set(Math.cos(a) * t[0], t[2] + t[1] / 2 - .32 - (k % 3) * .12, Math.sin(a) * t[0]); drip.scale.y = 1.6; cake.add(drip);
+        }
+      });
+      for (var c = 0; c < candles; c++) {
+        var a2 = (c / candles) * Math.PI * 2, r = candles > 1 ? .7 : 0, cx = Math.cos(a2) * r, cz = Math.sin(a2) * r;
+        var candle = new THREE.Mesh(new THREE.CylinderGeometry(.09, .09, 1, 12), candleMat); candle.position.set(cx, 4.8, cz); cake.add(candle);
+        var flame = new THREE.Mesh(new THREE.ConeGeometry(.13, .38, 10), flameMat); flame.position.set(cx, 5.5, cz); cake.add(flame); parts.flames.push(flame);
+      }
+      scene.add(cake);
     }
-    requestAnimationFrame(tick);
-  })(0);
+    makeCake(-3.2, 1, 3);
+    makeCake(3.4, .72, 1);
+
+    // balloons
+    var balloonGeo = new THREE.SphereGeometry(.9, 28, 24);
+    var knotGeo = new THREE.ConeGeometry(.14, .25, 8);
+    for (var b = 0; b < 22; b++) {
+      var g = new THREE.Group();
+      var ang = Math.random() * Math.PI * 2, rad = 5 + Math.random() * 11;
+      g.position.set(Math.cos(ang) * rad, 3 + Math.random() * 9, Math.sin(ang) * rad - 2);
+      var body = new THREE.Mesh(balloonGeo, mat(0xffffff, { roughness: .25, metalness: .1 })); body.scale.y = 1.2; g.add(body);
+      var knot = new THREE.Mesh(knotGeo, body.material); knot.position.y = -1.15; knot.rotation.x = Math.PI; g.add(knot);
+      var str = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, -1.25, 0), new THREE.Vector3(.3, -4.5, .2)]), new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: .5 }));
+      g.add(str); parts.strings.push(str);
+      g.userData = { y: g.position.y, ph: Math.random() * 6, sp: .6 + Math.random() * .6 };
+      scene.add(g); parts.balloons.push({ g: g, mesh: body });
+    }
+
+    // gifts
+    for (var i = 0; i < 7; i++) {
+      var s = .8 + Math.random() * .9, ga = Math.random() * Math.PI * 2, gr = 7.5 + Math.random() * 3;
+      var box = new THREE.Mesh(new THREE.BoxGeometry(s, s * .8, s), mat(0xffffff, { roughness: .5 }));
+      box.position.set(Math.cos(ga) * gr, s * .4, Math.sin(ga) * gr); box.rotation.y = Math.random() * Math.PI;
+      var rm = mat(0xffffff, { roughness: .3, metalness: .2 });
+      var r1 = new THREE.Mesh(new THREE.BoxGeometry(s * 1.02, s * .82, s * .18), rm);
+      var r2 = new THREE.Mesh(new THREE.BoxGeometry(s * .18, s * .82, s * 1.02), rm);
+      box.add(r1); box.add(r2); scene.add(box); parts.gifts.push(box); parts.ribbons.push(rm);
+    }
+
+    // confetti (instanced)
+    var N = 420;
+    var confetti = new THREE.InstancedMesh(new THREE.PlaneGeometry(.22, .34), new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide, vertexColors: true }), N);
+    var dummy = new THREE.Object3D(), cdata = [], colorArr = new Float32Array(N * 3), ccol = new THREE.Color();
+    for (var n = 0; n < N; n++) {
+      cdata.push({ x: (Math.random() - .5) * 60, y: Math.random() * 30, z: (Math.random() - .5) * 60 - 5, rx: Math.random() * 6, ry: Math.random() * 6, v: .4 + Math.random() * 1.2, ph: Math.random() * 6 });
+    }
+    confetti.instanceColor = new THREE.InstancedBufferAttribute(colorArr, 3);
+    scene.add(confetti);
+
+    // stars / sparkles
+    var sp = new Float32Array(500 * 3);
+    for (var q = 0; q < 500; q++) {
+      var th = Math.random() * Math.PI * 2, ph2 = Math.acos(2 * Math.random() - 1), rr = 60 + Math.random() * 40;
+      sp[q * 3] = Math.sin(ph2) * Math.cos(th) * rr; sp[q * 3 + 1] = Math.abs(Math.cos(ph2) * rr) + 2; sp[q * 3 + 2] = Math.sin(ph2) * Math.sin(th) * rr;
+    }
+    var stars = new THREE.Points(new THREE.BufferGeometry().setAttribute('position', new THREE.BufferAttribute(sp, 3)), new THREE.PointsMaterial({ color: 0xffffff, size: .5, transparent: true, opacity: .7, sizeAttenuation: true, fog: false }));
+    scene.add(stars);
+
+    // camera path
+    var posCurve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(0, 7, 62), new THREE.Vector3(9, 9, 38), new THREE.Vector3(-10, 6, 22),
+      new THREE.Vector3(-6, 3.6, 12), new THREE.Vector3(8, 3.4, 10), new THREE.Vector3(9, 5.5, -7),
+      new THREE.Vector3(-6, 9, -12), new THREE.Vector3(0, 12, 14), new THREE.Vector3(0, 9, 17)
+    ]);
+    var lookCurve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(0, 5, 0), new THREE.Vector3(2, 7, 0), new THREE.Vector3(0, 4, 0),
+      new THREE.Vector3(0, 3, 0), new THREE.Vector3(0, 3.5, 0), new THREE.Vector3(0, 4, 0),
+      new THREE.Vector3(0, 4, 0), new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, -3, 0)
+    ]);
+
+    function recolor(S) {
+      scene.background = new THREE.Color(S.bg); scene.fog.color.set(S.bg);
+      ground.material.color.set(S.ground);
+      parts.plates.forEach(function (pl) { pl.material.color.set(S.tiers[0]); });
+      parts.tiers.forEach(function (m, i) { m.material.color.set(S.tiers[i % S.tiers.length]); });
+      parts.icing.forEach(function (m) { m.material.color.set(S.icing); });
+      parts.balloons.forEach(function (bl, i) { bl.mesh.material.color.set(S.balloons[i % S.balloons.length]); });
+      parts.strings.forEach(function (l) { l.material.color.set(S.star); });
+      parts.gifts.forEach(function (gm, i) { gm.material.color.set(S.gifts[i % S.gifts.length]); });
+      parts.ribbons.forEach(function (rm) { rm.color.set(S.ribbon); });
+      stars.material.color.set(S.star);
+      sun.color.set(S.light);
+      var pal = S.balloons;
+      for (var n = 0; n < N; n++) { ccol.set(pal[n % pal.length]); colorArr[n * 3] = ccol.r; colorArr[n * 3 + 1] = ccol.g; colorArr[n * 3 + 2] = ccol.b; }
+      confetti.instanceColor.needsUpdate = true;
+    }
+
+    var w = 0, h = 0;
+    function resize() {
+      if (innerWidth === w && innerHeight === h) return;
+      w = innerWidth; h = innerHeight;
+      renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+    }
+
+    // mood: 'normal' | 'sad' | 'happy'. sadF eases 0..1; a burst is a timed confetti launch from the cakes.
+    var mood = 'normal', sadF = 0, ct = 0, last = null, burstStart = -1, bdata = null;
+    function setMood(m) {
+      mood = m;
+      if (m === 'happy') {
+        burstStart = performance.now(); bdata = [];
+        for (var n = 0; n < N; n++) {
+          var side = n % 2 ? 3.4 : -3.2, ang = Math.random() * Math.PI * 2, sp = 6 + Math.random() * 9;
+          bdata.push({ x: side + (Math.random() - .5), y: 5.5, z: (Math.random() - .5), vx: Math.cos(ang) * sp * .6, vy: 9 + Math.random() * 9, vz: Math.sin(ang) * sp * .6 });
+        }
+      }
+    }
+    var cur = 0, target = 0, t0 = performance.now();
+    function frame(now) {
+      resize();
+      var t = (now - t0) / 1000, dt = last === null ? 0 : Math.min((now - last) / 1000, .05); last = now;
+      sadF += ((mood === 'sad' ? 1 : 0) - sadF) * .035;
+      ct += dt * (1 - sadF);
+      cur += (target - cur) * .09;
+      var p = clamp(cur, 0, 1);
+      camera.position.copy(posCurve.getPoint(p));
+      camera.position.x += Math.sin(t * .5) * .25; camera.position.y += Math.cos(t * .7) * .15;
+      camera.lookAt(lookCurve.getPoint(p));
+
+      var lively = mood === 'happy' ? 1.6 : 1;
+      parts.balloons.forEach(function (bl) {
+        var u = bl.g.userData, bob = Math.sin(t * u.sp * lively + u.ph) * .35 * (1 - sadF * .8);
+        bl.g.position.y = u.y + bob - 3.2 * sadF + (mood === 'happy' ? .8 : 0);
+        bl.g.rotation.z = Math.sin(t * u.sp * .7 + u.ph) * .06 + sadF * .35;
+        var s = 1 - .22 * sadF; bl.g.scale.set(s, s, s);
+      });
+      parts.flames.forEach(function (f, i) {
+        var s = (1 + Math.sin(t * 14 + i * 1.3) * .18) * lively * (1 - sadF);
+        f.scale.set(s, (1 + Math.sin(t * 11 + i) * .22) * lively * (1 - sadF), s);
+      });
+      candleLight.intensity = (1.1 + Math.sin(t * 9) * .15) * lively * (1 - sadF);
+      sun.intensity = .9 - .45 * sadF; ambient.intensity = .9 - .4 * sadF;
+
+      var bt = burstStart < 0 ? -1 : (now - burstStart) / 1000;
+      if (bt > 4) { burstStart = -1; bdata = null; bt = -1; }
+      for (var n = 0; n < N; n++) {
+        var d = cdata[n];
+        if (bt >= 0) {
+          var b = bdata[n];
+          dummy.position.set(b.x + b.vx * bt, b.y + b.vy * bt - 4.9 * bt * bt, b.z + b.vz * bt);
+          dummy.rotation.set(d.rx + bt * 6, d.ry + bt * 5, 0);
+        } else {
+          var y = d.y - ((ct * d.v) % 30); if (y < 0) y += 30;
+          dummy.position.set(d.x + Math.sin(ct + d.ph) * .6, y, d.z); dummy.rotation.set(d.rx + ct * 1.4, d.ry + ct * 1.1, 0);
+        }
+        dummy.updateMatrix(); confetti.setMatrixAt(n, dummy.matrix);
+      }
+      confetti.instanceMatrix.needsUpdate = true;
+      renderer.render(scene, camera);
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+    var override = null;
+    return {
+      recolor: recolor, setMood: setMood,
+      setProgress: function (p) { if (override === null) target = p; },
+      setOverride: function (p) { override = p; if (p !== null) target = p; }
+    };
+  }
+
+  // ---------- scroll + HUD ----------
+  var stage = document.getElementById('stage'), shots = document.querySelectorAll('.shot'), cue = document.getElementById('cue');
+  var hudStatic = false;
+  function progress() {
+    var h = stage.offsetHeight - innerHeight;
+    return clamp((scrollY - stage.offsetTop) / Math.max(h, 1), 0, 1);
+  }
+  var hudOff = false;
+  function updateHud(p) {
+    if (hudStatic) return;
+    // fade all shots out once the scroll leaves the stage, and hide them during a reaction
+    var past = clamp((scrollY - (stage.offsetTop + stage.offsetHeight - innerHeight)) / (innerHeight * .5), 0, 1);
+    shots.forEach(function (s) {
+      var at = +s.dataset.at, span = +s.dataset.span, d = (p - at) / span;
+      var vis = clamp(1 - Math.abs(d), 0, 1), o = hudOff ? 0 : Math.pow(vis, 1.3) * (1 - past);
+      s.style.opacity = o;
+      s.style.transform = 'translateZ(' + (d * 420) + 'px) translateY(' + (-d * 12) + 'vh)';
+      s.style.visibility = o < .01 ? 'hidden' : 'visible';
+    });
+    cue.style.opacity = p < .05 ? 1 : 0;
+  }
+  var queued = false;
+  function onScroll() {
+    if (queued) return; queued = true;
+    requestAnimationFrame(function () { queued = false; var p = progress(); updateHud(p); if (world) world.setProgress(p); });
+  }
+
+  if (!reduced) { try { world = buildWorld(); } catch (e) { world = null; } }
+  if (!world) { root.classList.add('static'); hudStatic = true; document.getElementById('scene').hidden = true; }
+
+  if (world) world.recolor(SKIN);
+
+  addEventListener('scroll', onScroll, { passive: true });
+  addEventListener('resize', onScroll);
+  onScroll();
+
+  var form = document.getElementById('rsvp'), reaction = document.getElementById('reaction'), mouth = document.getElementById('mouth');
+  function openReaction(yes, name) {
+    reaction.classList.toggle('happy', yes); reaction.classList.toggle('sad', !yes);
+    mouth.setAttribute('d', yes ? 'M32 62 Q50 80 68 62' : 'M34 72 Q50 60 66 72');
+    if (yes) {
+      document.getElementById('rTitle').innerHTML = 'Yes! See you on the <em>21st</em>, ' + name + '.';
+      document.getElementById('rText').textContent = 'Affan is already counting the sleeps. Ismail has no idea what is going on, but he will be the happiest one in the room when you walk in.';
+    } else {
+      document.getElementById('rTitle').innerHTML = "We'll <em>miss you</em>, " + name + '.';
+      document.getElementById('rText').textContent = "The candles just went out a little early. Affan will save you a slice, and Ismail will still wave at the door, just in case. You'll be in our hearts on the night.";
+    }
+    var full = (document.getElementById('guest').value || '').trim() || 'A guest';
+    var count = document.getElementById('count').value || '1';
+    var notes = (document.getElementById('notes').value || '').trim();
+    var msg = "RSVP for Affan & Ismail's birthday (Sat 21 Nov)\n" +
+      'Name: ' + full + '\n' +
+      'Coming: ' + (yes ? 'Yes, ' + count + (count === '1' ? ' person' : ' people') : 'Sadly no') +
+      (notes ? '\nNotes: ' + notes : '');
+    document.getElementById('waLink').href = 'https://wa.me/923089250238?text=' + encodeURIComponent(msg);
+    reaction.hidden = false; document.body.classList.add('locked');
+    hudOff = true; updateHud(progress());
+    if (world) { world.setOverride(yes ? .5 : .56); world.setMood(yes ? 'happy' : 'sad'); }
+    document.getElementById('waLink').focus();
+  }
+  function closeReaction(reset) {
+    reaction.hidden = true; document.body.classList.remove('locked');
+    hudOff = false;
+    if (world) { world.setOverride(null); if (reset) world.setMood('normal'); }
+    onScroll();
+    if (reset) document.getElementById('guest').focus();
+  }
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var raw = (document.getElementById('guest').value || '').trim().split(' ')[0];
+    var name = raw ? raw.replace(/[<>&]/g, '') : 'friend';
+    var yes = document.getElementById('coming').selectedIndex === 0;
+    form.querySelector('button.go').textContent = 'Update RSVP';
+    openReaction(yes, name);
+  });
+  document.getElementById('closeR').addEventListener('click', function () { closeReaction(false); });
+  document.getElementById('again').addEventListener('click', function () { closeReaction(true); });
+  addEventListener('keydown', function (e) { if (e.key === 'Escape' && !reaction.hidden) closeReaction(false); });
 })();
 </script>
 </body>
