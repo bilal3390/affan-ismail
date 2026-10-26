@@ -62,7 +62,7 @@ canvas#scene { position: fixed; inset: 0; width: 100%; height: 100%; display: bl
 @keyframes bob { 50% { transform: translateY(5px); } }
 
 /* ---------- landing: RSVP ---------- */
-.land { position: relative; z-index: 3; background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--bg) 45%, transparent) 40%); padding-block: 40vh 2rem;
+.land { position: relative; z-index: 3; background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--bg) 45%, transparent) 40%); padding-block: 40vh 0;
   padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
 .panel { max-width: 640px; margin: 0 auto; background: var(--card); color: var(--card-fg); border-radius: 20px; padding: clamp(1.4rem, 5vw, 2.4rem);
   display: grid; gap: .9rem; box-shadow: 0 40px 80px -30px rgb(0 0 0 / .5); }
@@ -124,7 +124,7 @@ button.ghost { background: color-mix(in srgb, var(--bg) 40%, transparent); color
 body.locked { overflow: hidden; }
 body.locked .land, body.locked .cue { visibility: hidden; }
 @media (prefers-reduced-motion: reduce) { .reaction, .reaction-inner > *, .face, .tear { animation: none !important; } }
-.host { text-align: center; color: var(--muted); font-size: .9rem; padding-block: 2.5rem 7rem; margin: 0; text-shadow: 0 1px 12px var(--bg); }
+.host { text-align: center; color: var(--muted); font-size: .9rem; padding-block: 2rem 1.5rem; margin: 0; text-shadow: 0 1px 12px var(--bg); }
 .host b { color: var(--fg); }
 
 /* static fallback: reduced motion or WebGL unavailable */
