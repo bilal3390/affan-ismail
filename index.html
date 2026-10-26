@@ -41,7 +41,9 @@ canvas#scene { position: fixed; inset: 0; width: 100%; height: 100%; display: bl
   will-change: transform, opacity; transform-style: preserve-3d;
   text-shadow: 0 2px 24px var(--bg), 0 0 60px var(--bg);
   position: relative; padding: 2.5rem 1.5rem;
+  backface-visibility: hidden;
 }
+@media (max-width: 767px) { .shot { text-shadow: 0 1px 14px var(--bg), 0 0 28px var(--bg); } }
 .shot::before {
   content: ""; position: absolute; inset: -20% -30%; z-index: -1; border-radius: 50%;
   background: radial-gradient(closest-side, color-mix(in srgb, var(--bg) 78%, transparent), transparent);
@@ -226,9 +228,14 @@ html.static .land { padding-top: 2rem; }
   function buildWorld() {
     if (!window.THREE) return null;
     var canvas = document.getElementById('scene');
+    // Quality tier: phones get lighter geometry, fewer particles and a capped pixel ratio.
+    var mobile = innerWidth < 768 || (navigator.maxTouchPoints || 0) > 1;
+    var Q = mobile
+      ? { seg: 28, sph: 16, tor: [8, 28], drips: 6, balloons: 14, gifts: 5, confetti: 160, stars: 220, dpr: 1.5, aa: false }
+      : { seg: 64, sph: 28, tor: [14, 64], drips: 10, balloons: 22, gifts: 7, confetti: 420, stars: 500, dpr: 2, aa: true };
     var renderer;
-    try { renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: false }); } catch (e) { return null; }
-    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+    try { renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: Q.aa, alpha: false, powerPreference: 'high-performance' }); } catch (e) { return null; }
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, Q.dpr));
     renderer.outputEncoding = THREE.sRGBEncoding;
 
     var scene = new THREE.Scene();
@@ -243,7 +250,7 @@ html.static .land { padding-top: 2rem; }
     var mat = function (color, opts) { return new THREE.MeshStandardMaterial(Object.assign({ color: color, roughness: .55, metalness: .05 }, opts || {})); };
 
     // ground disc
-    var ground = new THREE.Mesh(new THREE.CircleGeometry(40, 64), mat(0x000000, { roughness: 1 }));
+    var ground = new THREE.Mesh(new THREE.CircleGeometry(40, Q.seg), mat(0x000000, { roughness: 1 }));
     ground.rotation.x = -Math.PI / 2; scene.add(ground); parts.ground = ground;
 
     // two cakes: Affan (3 candles) and Ismail (1 candle)
@@ -252,17 +259,17 @@ html.static .land { padding-top: 2rem; }
     parts.plates = [];
     function makeCake(x, s, candles) {
       var cake = new THREE.Group(); cake.position.x = x; cake.scale.setScalar(s);
-      var plate = new THREE.Mesh(new THREE.CylinderGeometry(4.4, 4.6, .25, 64), mat(0xffffff, { roughness: .3, metalness: .2 }));
+      var plate = new THREE.Mesh(new THREE.CylinderGeometry(4.4, 4.6, .25, Q.seg), mat(0xffffff, { roughness: .3, metalness: .2 }));
       plate.position.y = .12; cake.add(plate); parts.plates.push(plate);
       var tiersSpec = [[3.4, 1.5, 1.0], [2.5, 1.35, 2.42], [1.7, 1.2, 3.7]];
       tiersSpec.forEach(function (t) {
-        var m = new THREE.Mesh(new THREE.CylinderGeometry(t[0], t[0], t[1], 64), mat(0xffffff));
+        var m = new THREE.Mesh(new THREE.CylinderGeometry(t[0], t[0], t[1], Q.seg), mat(0xffffff));
         m.position.y = t[2]; cake.add(m); parts.tiers.push(m);
-        var ring = new THREE.Mesh(new THREE.TorusGeometry(t[0], .17, 14, 64), mat(0xffffff, { roughness: .35 }));
+        var ring = new THREE.Mesh(new THREE.TorusGeometry(t[0], .17, Q.tor[0], Q.tor[1]), mat(0xffffff, { roughness: .35 }));
         ring.rotation.x = Math.PI / 2; ring.position.y = t[2] + t[1] / 2; cake.add(ring); parts.icing.push(ring);
-        for (var k = 0; k < 10; k++) {
-          var drip = new THREE.Mesh(new THREE.SphereGeometry(.16, 10, 10), ring.material);
-          var a = (k / 10) * Math.PI * 2 + t[0];
+        for (var k = 0; k < Q.drips; k++) {
+          var drip = new THREE.Mesh(new THREE.SphereGeometry(.16, 8, 8), ring.material);
+          var a = (k / Q.drips) * Math.PI * 2 + t[0];
           drip.position.set(Math.cos(a) * t[0], t[2] + t[1] / 2 - .32 - (k % 3) * .12, Math.sin(a) * t[0]); drip.scale.y = 1.6; cake.add(drip);
         }
       });
@@ -277,9 +284,9 @@ html.static .land { padding-top: 2rem; }
     makeCake(3.4, .72, 1);
 
     // balloons
-    var balloonGeo = new THREE.SphereGeometry(.9, 28, 24);
+    var balloonGeo = new THREE.SphereGeometry(.9, Q.sph, Q.sph);
     var knotGeo = new THREE.ConeGeometry(.14, .25, 8);
-    for (var b = 0; b < 22; b++) {
+    for (var b = 0; b < Q.balloons; b++) {
       var g = new THREE.Group();
       var ang = Math.random() * Math.PI * 2, rad = 5 + Math.random() * 11;
       g.position.set(Math.cos(ang) * rad, 3 + Math.random() * 9, Math.sin(ang) * rad - 2);
@@ -292,7 +299,7 @@ html.static .land { padding-top: 2rem; }
     }
 
     // gifts
-    for (var i = 0; i < 7; i++) {
+    for (var i = 0; i < Q.gifts; i++) {
       var s = .8 + Math.random() * .9, ga = Math.random() * Math.PI * 2, gr = 7.5 + Math.random() * 3;
       var box = new THREE.Mesh(new THREE.BoxGeometry(s, s * .8, s), mat(0xffffff, { roughness: .5 }));
       box.position.set(Math.cos(ga) * gr, s * .4, Math.sin(ga) * gr); box.rotation.y = Math.random() * Math.PI;
@@ -303,7 +310,7 @@ html.static .land { padding-top: 2rem; }
     }
 
     // confetti (instanced)
-    var N = 420;
+    var N = Q.confetti;
     var confetti = new THREE.InstancedMesh(new THREE.PlaneGeometry(.22, .34), new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide, vertexColors: true }), N);
     var dummy = new THREE.Object3D(), cdata = [], colorArr = new Float32Array(N * 3), ccol = new THREE.Color();
     for (var n = 0; n < N; n++) {
@@ -313,8 +320,8 @@ html.static .land { padding-top: 2rem; }
     scene.add(confetti);
 
     // stars / sparkles
-    var sp = new Float32Array(500 * 3);
-    for (var q = 0; q < 500; q++) {
+    var sp = new Float32Array(Q.stars * 3);
+    for (var q = 0; q < Q.stars; q++) {
       var th = Math.random() * Math.PI * 2, ph2 = Math.acos(2 * Math.random() - 1), rr = 60 + Math.random() * 40;
       sp[q * 3] = Math.sin(ph2) * Math.cos(th) * rr; sp[q * 3 + 1] = Math.abs(Math.cos(ph2) * rr) + 2; sp[q * 3 + 2] = Math.sin(ph2) * Math.sin(th) * rr;
     }
@@ -354,7 +361,9 @@ html.static .land { padding-top: 2rem; }
     function resize() {
       if (innerWidth === w && innerHeight === h) return;
       w = innerWidth; h = innerHeight;
-      renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+      renderer.setSize(w, h, false); camera.aspect = w / h;
+      camera.fov = w / h < 1 ? 50 + (1 - w / h) * 22 : 50;  // portrait phones see wider so the cakes stay in frame
+      camera.updateProjectionMatrix();
     }
 
     // mood: 'normal' | 'sad' | 'happy'. sadF eases 0..1; a burst is a timed confetti launch from the cakes.
@@ -369,13 +378,17 @@ html.static .land { padding-top: 2rem; }
         }
       }
     }
+    // adaptive quality: if frames stay slow for a while, drop the pixel ratio once
+    var slow = 0, stepped = false;
     var cur = 0, target = 0, t0 = performance.now();
     function frame(now) {
       resize();
       var t = (now - t0) / 1000, dt = last === null ? 0 : Math.min((now - last) / 1000, .05); last = now;
-      sadF += ((mood === 'sad' ? 1 : 0) - sadF) * .035;
+      if (!stepped && dt > .028) { if (++slow > 45) { stepped = true; renderer.setPixelRatio(1); } } else if (slow > 0) slow--;
+      var k = 1 - Math.pow(1 - .09, dt * 60);  // same feel at 60, 90 or 120 Hz
+      sadF += ((mood === 'sad' ? 1 : 0) - sadF) * (1 - Math.pow(1 - .035, dt * 60));
       ct += dt * (1 - sadF);
-      cur += (target - cur) * .09;
+      cur += (target - cur) * k;
       var p = clamp(cur, 0, 1);
       camera.position.copy(posCurve.getPoint(p));
       camera.position.x += Math.sin(t * .5) * .25; camera.position.y += Math.cos(t * .7) * .15;
